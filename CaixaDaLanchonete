@@ -1,0 +1,59 @@
+class CaixaDaLanchonete {
+    constructor() {
+        this.menu = {
+            'cafe': ['Café', 3.00],
+            'chantily': ['Chantily (extra do Café)', 1.50],
+            'suco': ['Suco Natural', 6.20],
+            'sanduiche': ['Sanduíche', 6.50],
+            'queijo': ['Queijo (extra do Sanduíche)', 2.00],
+            'salgado': ['Salgado', 7.25],
+            'combo1': ['1 Suco e 1 Sanduíche', 9.50],
+            'combo2': ['1 Café e 1 Sanduíche', 7.50]
+            };
+        this.pagamentoFormas = ['dinheiro', 'debito', 'credito'];}
+
+    calcularValorDaCompra(metodoDePagamento, itens) {
+        const pedidos = [];
+        const extras = new Set();
+
+        for (const produto of itens) {
+            const [codigo, quantidade] = produto.split(',');
+            if (codigo === 'chantily' || codigo === 'queijo') {
+                extras.add(codigo);
+            } else {
+                pedidos.push([codigo, parseInt(quantidade)]);
+            }
+        }
+
+        for (const [produto, quantidade] of pedidos) {
+            if (!this.menu[produto]) {
+                return "Esse produto não existe no cardápio.";
+            }
+        }
+
+        if (pedidos.length === 0) {
+            return "Não há nada no carrinho.";
+        }
+
+        let total = 0;
+        for (const [produto, quantidade] of pedidos) {
+            total += this.menu[produto][1] * quantidade;
+        }
+
+        for (const extra of extras) {
+            total += this.menu[extra][1];
+        }
+
+        if (metodoDePagamento === 'dinheiro') {
+            total *= 0.95;
+        } else if (metodoDePagamento=== 'credito') {
+            total *= 1.03;
+        } else if (!this.pagamentoFormas.includes(metodoDePagamento)) {
+            return "Forma de pagamento não é permitida";
+        }
+
+        return `R$ ${total.toFixed(2)}`;
+    }
+}
+
+export { CaixaDaLanchonete };
